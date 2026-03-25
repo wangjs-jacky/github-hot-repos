@@ -42,7 +42,7 @@ async function analyzeRepo(repo) {
 
 ## 分析要求
 
-请从以下维度进行分析（直接输出内容，不要标题）：
+请从以下维度进行分析（直接输出内容，不要代码块标记，不要"AI 分析"之类的标题）：
 
 1. **项目定位**（50-100字）- 这个项目是做什么的？解决什么问题？
 
@@ -54,7 +54,7 @@ async function analyzeRepo(repo) {
 
 5. **推荐理由**（50-100字）
 
-请用 Markdown 格式输出，简洁明了，直接开始内容，不要有"AI 分析"之类的标题。`;
+请用 Markdown 格式输出，简洁明了。注意：不要使用代码块标记。`;
 
   const response = await fetch(QWEN_API_URL, {
     method: 'POST',
@@ -85,6 +85,12 @@ async function analyzeRepo(repo) {
 function generateMarkdown(repo, analysis) {
   const date = new Date().toISOString().split('T')[0];
   
+  // 清理分析文本（移除代码块标记）
+  const cleanAnalysis = analysis
+    .replace(/```markdown\n?/gi, '')
+    .replace(/```\n?/g, '')
+    .trim();
+  
   return `---
 name: ${repo.name}
 full_name: ${repo.full_name}
@@ -97,14 +103,14 @@ today_stars: ${repo.today_stars || 0}
 rank: ${repo.rank}
 date: ${date}
 text: |
-${analysis.split('\n').map(line => '  ' + line).join('\n')}
+${cleanAnalysis.split('\n').map(line => '  ' + line).join('\n')}
 ---
 
 # ${repo.full_name}
 
 ${repo.description || '暂无描述'}
 
-${analysis}
+${cleanAnalysis}
 
 ---
 
