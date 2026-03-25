@@ -2,40 +2,127 @@ name: Collect GitHub Trending
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: '采集模式'
+        required: false
+        default: 'daily'
+        type: choice
+        options:
+          - daily      # 每日增量（跳过已处理）
+          - batch      # 分批采集（按 Stars 区间）
+          - full       # 完整采集（获取全部）
+      language:
+        description: '语言筛选（留空为全部）'
+        required: false
+        default: ''
+        type: string
   schedule:
-    - cron: '0 */6 * * *'
+    # 每天 UTC 0:00 运行（北京时间 8:00）
+    - cron: '0 0 * * *'
 
 permissions:
   contents: write
 
+env:
+  # 默认采集参数
+  COLLECT_MODE: ${{ github.event.inputs.mode || 'daily' }}
+  LANGUAGE_FILTER: ${{ github.event.inputs.language || '' }}
+
 jobs:
   collect:
     runs-on: ubuntu-latest
+    timeout-minutes: 120  # 最长 2 小时
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Collect trending data
-        run: node scripts/collect.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📊 采集模式: $COLLECT_MODE"
+          echo "📝 语言筛选: ${LANGUAGE_FILTER:-全部}"
+
+          if [ "$COLLECT_MODE" = "batch" ]; then
+            if [ -n "$LANGUAGE_FILTER" ]; then
+              node scripts/collect.mjs --batch -l "$LANGUAGE_FILTER"
+            else
+              node scripts/collect.mjs --batch
+            fi
+          elif [ "$COLLECT_MODE" = "full" ]; then
+            if [ -n "$LANGUAGE_FILTER" ]; then
+              node scripts/collect.mjs -l "$LANGUAGE_FILTER" --max-pages 10
+            else
+              node scripts/collect.mjs --max-pages 10
+            fi
+          else
+            # daily 模式：增量采集
+            if [ -n "$LANGUAGE_FILTER" ]; then
+              node scripts/collect.mjs -l "$LANGUAGE_FILTER" --max-pages 6
+            else
+              node scripts/collect.mjs --max-pages 6
+            fi
+          fi
 
       - name: Process with AI
         env:
           QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
         run: node scripts/process.mjs
 
+      - name: Generate summary
+        id: summary
+        run: |
+          TOTAL=$(ls -d trending/*/ 2>/dev/null | wc -l)
+          TODAY=$(find trending -name "README.md" -newer output/trending.json 2>/dev/null | wc -l || echo "0")
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "today=$TODAY" >> $GITHUB_OUTPUT
+          echo "📊 仓库总数: $TOTAL"
+          echo "📊 今日处理: $TODAY"
+
       - name: Commit and push
         run: |
-          git config user.name "bot"
-          git config user.email "bot@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 添加文件
           git add -A
-          git diff --staged --quiet && exit 0
-          git commit -m "chore: update trending data with AI analysis $(date +%Y-%m-%d)"
+
+          # 检查是否有变更
+          if git diff --staged --quiet; then
+            echo "✅ 没有变更需要提交"
+            exit 0
+          fi
+
+          # 提交
+          COMMIT_DATE=$(date +%Y-%m-%d)
+          git commit -m "chore: update trending data $COMMIT_DATE
+
+- Total repos: ${{ steps.summary.outputs.total }}
+- Processed today: ${{ steps.summary.outputs.today }}
+- Mode: ${{ env.COLLECT_MODE }}"
+
+          # 推送
           git push
+
+      - name: Summary
+        run: |
+          echo "## 📊 采集报告" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 项目 | 数量 |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 仓库总数 | ${{ steps.summary.outputs.total }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 今日处理 | ${{ steps.summary.outputs.today }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 采集模式 | ${{ env.COLLECT_MODE }} |" >> $GITHUB_STEP_SUMMARY

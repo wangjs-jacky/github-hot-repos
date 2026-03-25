@@ -25,6 +25,8 @@ if (!existsSync('trending')) {
 // 读取采集的数据
 const trendingData = JSON.parse(readFileSync('output/trending.json', 'utf-8'));
 console.log(`📊 Processing ${trendingData.repos.length} repos with Qwen AI...`);
+console.log(`   查询条件: ${trendingData.meta.query || 'N/A'}`);
+console.log(`   总匹配数: ${trendingData.meta.total_count?.toLocaleString() || 'N/A'}`);
 
 /**
  * 调用 Qwen API 生成仓库分析
@@ -38,7 +40,9 @@ async function analyzeRepo(repo) {
 - **描述**: ${repo.description || '暂无描述'}
 - **语言**: ${repo.language}
 - **星标数**: ${repo.stars.toLocaleString()}
-- **今日新增**: ${(repo.today_stars || 0).toLocaleString()} stars
+- **Fork 数**: ${repo.forks?.toLocaleString() || 'N/A'}
+- **创建时间**: ${repo.created_at ? new Date(repo.created_at).toLocaleDateString('zh-CN') : 'N/A'}
+- **Topics**: ${repo.topics?.length > 0 ? repo.topics.join(', ') : '暂无'}
 
 ## 分析要求
 
@@ -84,13 +88,13 @@ async function analyzeRepo(repo) {
  */
 function generateMarkdown(repo, analysis) {
   const date = new Date().toISOString().split('T')[0];
-  
+
   // 清理分析文本（移除代码块标记）
   const cleanAnalysis = analysis
     .replace(/```markdown\n?/gi, '')
     .replace(/```\n?/g, '')
     .trim();
-  
+
   return `---
 name: ${repo.name}
 full_name: ${repo.full_name}
@@ -98,8 +102,11 @@ owner: ${repo.owner}
 url: ${repo.url}
 language: ${repo.language}
 stars: ${repo.stars}
-forks: ${repo.forks}
-today_stars: ${repo.today_stars || 0}
+forks: ${repo.forks || 0}
+created_at: ${repo.created_at || ''}
+updated_at: ${repo.updated_at || ''}
+topics: ${repo.topics ? JSON.stringify(repo.topics) : '[]'}
+license: ${repo.license || ''}
 rank: ${repo.rank}
 date: ${date}
 text: |
@@ -114,18 +121,30 @@ ${cleanAnalysis}
 
 ---
 
-> 采集时间: ${date} | 排名: #${repo.rank} | 今日新增: ${(repo.today_stars || 0).toLocaleString()} ⭐
+> 采集时间: ${date} | 排名: #${repo.rank} | Stars: ${repo.stars.toLocaleString()} ⭐ | 创建于: ${repo.created_at ? new Date(repo.created_at).toLocaleDateString('zh-CN') : 'N/A'}
 `;
 }
 
 // 处理每个仓库
 const results = [];
+let skipped = 0;
+let processed = 0;
+
 for (let i = 0; i < trendingData.repos.length; i++) {
   const repo = trendingData.repos[i];
   const dirName = repo.full_name.replace('/', '-');
   const trendingDir = join('trending', dirName);
+  const readmePath = join(trendingDir, 'README.md');
 
   console.log(`\n[${i + 1}/${trendingData.repos.length}] 处理 ${repo.full_name}...`);
+
+  // 跳过已处理的仓库
+  if (existsSync(readmePath)) {
+    console.log(`   ⏭️  已存在，跳过`);
+    skipped++;
+    results.push({ repo: repo.full_name, status: 'skipped' });
+    continue;
+  }
 
   try {
     if (!existsSync(trendingDir)) {
@@ -149,4 +168,4 @@ for (let i = 0; i < trendingData.repos.length; i++) {
   }
 }
 
-console.log(`\n📊 处理完成！成功: ${results.filter(r => r.status === 'success').length}, 失败: ${results.filter(r => r.status === 'failed').length}`);
+console.log(`\n📊 处理完成！成功: ${results.filter(r => r.status === 'success').length}, 跳过: ${skipped}, 失败: ${results.filter(r => r.status === 'failed').length}`);

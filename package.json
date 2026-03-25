@@ -1,10 +1,13 @@
 {
   "name": "github-trending-collector",
   "version": "1.0.0",
-  "description": "GitHub Trending 自动化采集项目，使用 Qwen AI 生成分析报告",
+  "description": "GitHub 热门仓库自动化采集项目，使用 Qwen AI 生成分析报告",
   "type": "module",
   "scripts": {
     "collect": "node scripts/collect.mjs",
+    "collect:batch": "node scripts/collect.mjs --batch",
+    "collect:ts": "node scripts/collect.mjs -l TypeScript",
+    "collect:py": "node scripts/collect.mjs -l Python",
     "process": "node scripts/process.mjs",
     "test": "node --test scripts/__tests__/*.test.mjs",
     "test-api": "node scripts/test-api.mjs"
