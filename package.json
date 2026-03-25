@@ -1,5 +1,5 @@
 {
-  "name": "github-trending-collector",
+  "name": "github-hot-repos",
   "version": "1.0.0",
   "description": "GitHub 热门仓库自动化采集项目，使用 Qwen AI 生成分析报告",
   "type": "module",
