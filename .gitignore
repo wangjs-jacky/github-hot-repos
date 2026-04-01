@@ -1,11 +1,26 @@
-# 环境变量
-.env
-
-# 依赖
+# dependencies
 node_modules/
 
-# 基础数据（保留）
-# output/trending.json  # 注释掉，允许提交
+# next.js
+.next/
+out/
 
-# 临时文件
-*.tmp
+# production
+dist/
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+
+# env
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

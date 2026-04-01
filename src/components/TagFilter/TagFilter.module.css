@@ -1,0 +1,30 @@
+.filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 16px 0;
+}
+
+.tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag:hover {
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+
+.tag[data-active='true'] {
+  background: var(--accent-green-fill);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}

@@ -1,0 +1,56 @@
+/* 深色主题（默认） */
+:root,
+[data-theme='dark'] {
+  --bg-primary: #0a0a0b;
+  --bg-card: #1a1a1f;
+  --bg-elevated: #131316;
+  --bg-input: #1e1e24;
+
+  --text-primary: #e5e5e7;
+  --text-secondary: #8b8b96;
+  --text-muted: #6b6b76;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-active: rgba(0, 255, 136, 0.3);
+
+  --accent-green: #00ff88;
+  --accent-amber: #ffb800;
+  --accent-blue: #00d4ff;
+  --accent-purple: #a855f7;
+  --accent-red: #ff4757;
+
+  --accent-green-fill: rgba(0, 255, 136, 0.12);
+  --accent-green-stroke: rgba(0, 255, 136, 0.3);
+  --accent-amber-fill: rgba(255, 184, 0, 0.12);
+  --accent-red-fill: rgba(255, 71, 87, 0.12);
+  --accent-purple-fill: rgba(168, 85, 247, 0.12);
+  --accent-cyan-fill: rgba(0, 212, 255, 0.15);
+}
+
+/* 浅色主题 */
+[data-theme='light'] {
+  --bg-primary: #ffffff;
+  --bg-card: #f8f9fa;
+  --bg-elevated: #f0f1f3;
+  --bg-input: #e8e9eb;
+
+  --text-primary: #1a1a1f;
+  --text-secondary: #5a5a66;
+  --text-muted: #8b8b96;
+
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-active: rgba(0, 128, 68, 0.3);
+
+  --accent-green: #00a854;
+  --accent-amber: #d49600;
+  --accent-blue: #0095cc;
+  --accent-purple: #8b3fd6;
+  --accent-red: #d63644;
+
+  --accent-green-fill: rgba(0, 168, 84, 0.1);
+  --accent-green-stroke: rgba(0, 168, 84, 0.25);
+  --accent-amber-fill: rgba(212, 150, 0, 0.1);
+  --accent-red-fill: rgba(214, 54, 68, 0.1);
+  --accent-purple-fill: rgba(139, 63, 214, 0.1);
+  --accent-cyan-fill: rgba(0, 149, 204, 0.1);
+}

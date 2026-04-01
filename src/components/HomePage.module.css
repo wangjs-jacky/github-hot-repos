@@ -1,0 +1,39 @@
+.app {
+  min-height: 100vh;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.themeToggle {
+  font-size: 18px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.themeToggle:hover {
+  border-color: var(--text-muted);
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 80px 0;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.error {
+  color: var(--accent-red);
+}

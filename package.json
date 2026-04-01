@@ -1,24 +1,32 @@
 {
   "name": "github-hot-repos",
+  "private": true,
   "version": "1.0.0",
-  "description": "GitHub 热门仓库自动化采集项目，使用 Qwen AI 生成分析报告",
-  "type": "module",
   "scripts": {
-    "collect": "node scripts/collect.mjs",
-    "collect:batch": "node scripts/collect.mjs --batch",
-    "collect:ts": "node scripts/collect.mjs -l TypeScript",
-    "collect:py": "node scripts/collect.mjs -l Python",
-    "process": "node scripts/process.mjs",
-    "test": "node --test scripts/__tests__/*.test.mjs",
-    "test-api": "node scripts/test-api.mjs"
-  },
-  "keywords": ["github", "trending", "automation", "qwen", "ai"],
-  "author": "wangjs-jacky",
-  "license": "MIT",
-  "engines": {
-    "node": ">=20.0.0"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "lucide-react": "^0.468.0",
+    "next": "^15.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "jsdom": "^25.0.1",
+    "typescript": "~5.7.0",
+    "vite": "^5.4.21",
+    "vitest": "^2.1.0"
   }
 }

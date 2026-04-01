@@ -1,0 +1,50 @@
+{
+  "slug": "github-hot-repos",
+  "description": "实现 GitHub 热榜功能：展示 GitHub 热门仓库，支持搜索、筛选、详情弹窗，深色/浅色主题",
+  "status": "brainstorm",
+  "mode": "yolo",
+  "complexity": "complex",
+  "createdAt": "2026-04-01",
+  "phases": {
+    "init": {
+      "status": "completed",
+      "findings": {
+        "dataSource": {
+          "repo": "wangjs-jacky/github-hot-repos",
+          "dataFile": "output/trending.json",
+          "dataFormat": {
+            "meta": "timestamp, query, filters, total_count, collected_count, source",
+            "repo": "id, full_name, owner, name, url, description, language, stars, forks, open_issues, watchers, created_at, updated_at, pushed_at, is_fork, is_archived, topics, license, homepage, rank"
+          }
+        },
+        "visualDesign": {
+          "file": "github-hot-repos.pen",
+          "frames": {
+            "HCTxD": "主页面 (深色)",
+            "KT1cO": "详情弹窗 (深色)",
+            "99Q5D": "主页面 (浅色)",
+            "I7HHw": "详情弹窗 (浅色)",
+            "lnngA": "RepoCard 可复用组件"
+          }
+        },
+        "estimatedFiles": 12,
+        "projectType": "React Web App (Vite + TypeScript)"
+      }
+    },
+    "brainstorm": {
+      "status": "pending"
+    },
+    "harness": {
+      "status": "pending"
+    },
+    "plan": {
+      "status": "pending"
+    },
+    "execute": {
+      "status": "pending"
+    },
+    "review": {
+      "status": "pending"
+    }
+  }
+}
