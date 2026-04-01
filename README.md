@@ -2,6 +2,8 @@
 
 > 🚀 自动化采集 GitHub 热门仓库，使用 Qwen AI 生成分析报告
 
+**[🌐 在线访问](https://openxx.ai/hot-github)** | **[📦 GitHub 仓库](https://github.com/wangjs-jacky/github-hot-repos)**
+
 ## 功能特性
 
 - 🔍 **智能搜索** - 使用 GitHub Search API 搜索符合条件的仓库
