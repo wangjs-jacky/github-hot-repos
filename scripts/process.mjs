@@ -4,9 +4,19 @@
  * 数据处理脚本：调用 Qwen AI 生成仓库分析报告
  */
 
-import 'dotenv/config';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+
+// Load .env in local runs, but do not require dotenv in CI.
+if (typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile();
+  } catch {}
+} else {
+  try {
+    await import('dotenv/config');
+  } catch {}
+}
 
 const QWEN_API_KEY = process.env.QWEN_API_KEY;
 const QWEN_API_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';

@@ -5,7 +5,16 @@
  * 发送 "hello world" 测试请求验证 API Key 是否有效
  */
 
-import 'dotenv/config';
+// Load .env in local runs, but do not require dotenv in CI.
+if (typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile();
+  } catch {}
+} else {
+  try {
+    await import('dotenv/config');
+  } catch {}
+}
 
 const QWEN_API_KEY = process.env.QWEN_API_KEY;
 

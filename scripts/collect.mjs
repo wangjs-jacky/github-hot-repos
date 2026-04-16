@@ -9,9 +9,19 @@
  * - Stars > 5000
  */
 
-import 'dotenv/config';
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
 import { execSync } from 'child_process';
+
+// Load .env in local runs, but do not require dotenv in CI.
+if (typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile();
+  } catch {}
+} else {
+  try {
+    await import('dotenv/config');
+  } catch {}
+}
 
 // 配置
 const CONFIG = {
